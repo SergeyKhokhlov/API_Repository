@@ -2,7 +2,8 @@ import os
 import sys
 import requests
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap, QFont
+from PyQt5 import QtGui, QtCore
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QApplication, QPushButton, QWidget, QLabel, QLineEdit
 
 SCREEN_SIZE = [600, 600]
@@ -19,7 +20,7 @@ class Example(QWidget):
         self.temp = "map"
         self.coords = [59.935789, 30.325904]
         map_request = f"http://static-maps.yandex.ru/1.x/?ll={self.coords[1]}," \
-            f"{self.coords[0]}8&spn={self.zoom},{self.zoom}&l={self.temp}"
+                      f"{self.coords[0]}8&spn={self.zoom},{self.zoom}&l={self.temp}"
         response = requests.get(map_request)
 
         if not response:
@@ -73,23 +74,24 @@ class Example(QWidget):
         self.btn_search = QPushButton("Поиск", self)
         self.btn_search.resize(100, 40)
         self.btn_search.setStyleSheet("QPushButton {border-radius: 10px; "
-                                   "border: 4px solid darkgreen; font-size: 20px; color: yellow; "
-                                   "background-color: green} QPushButton:hover "
-                                   "{background-color: black; border: 4px solid black;}"
-                                   ";}")
+                                      "border: 4px solid darkgreen; font-size: 20px; color: yellow; "
+                                      "background-color: green} QPushButton:hover "
+                                      "{background-color: black; border: 4px solid black;}"
+                                      ";}")
         self.btn_search.move(420, 465)
-        self.font = QFont()
-        self.font.setPointSize(20)
         self.line_search = QLineEdit(self)
-        self.line_search.resize(300, 30)
-        self.line_search.move(80, 470)
-        self.line_search.setFont(self.font)
+        self.line_search.resize(300, 40)
+        self.line_search.move(80, 465)
+        self.line_search.setStyleSheet("QLineEdit {background-color: green; color: yellow; "
+                                       "border-radius: 10px; border: 4px solid darkgreen; "
+                                       "font-size: 20px;}")
+        self.btn_search.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_map.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_gib.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_sat.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_map.clicked.connect(self.change_map)
         self.btn_sat.clicked.connect(self.change_map)
         self.btn_gib.clicked.connect(self.change_map)
-
-
-
 
     def change_map(self):
         if self.sender().text() == "Схема":
@@ -99,7 +101,7 @@ class Example(QWidget):
         elif self.sender().text() == "Гибрид":
             self.temp = "skl"
         self.map_request = f"http://static-maps.yandex.ru/1.x/?ll={self.coords[1]}," \
-            f"{self.coords[0]}8&spn={self.zoom},{self.zoom}&l={self.temp}"
+                           f"{self.coords[0]}8&spn={self.zoom},{self.zoom}&l={self.temp}"
         response = requests.get(self.map_request)
         if response:
             self.map_file = "map.png"
@@ -127,7 +129,7 @@ class Example(QWidget):
         elif event.key() == Qt.Key_Down:
             self.coords[0] -= 0.001
         self.map_request = f"http://static-maps.yandex.ru/1.x/?ll={self.coords[1]}," \
-            f"{self.coords[0]}8&spn={self.zoom},{self.zoom}&l={self.temp}"
+                           f"{self.coords[0]}8&spn={self.zoom},{self.zoom}&l={self.temp}"
         response = requests.get(self.map_request)
         if response:
             self.map_file = "map.png"
