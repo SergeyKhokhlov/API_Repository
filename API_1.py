@@ -15,6 +15,7 @@ class Example(QWidget):
         self.initUI()
 
     def getImage(self):
+        zoom = [0.002, 0.002]
         coords = [59.935789, 30.325904]
         map_request = f"http://static-maps.yandex.ru/1.x/?ll={coords[1]}," \
             f"{coords[0]}8&spn={zoom[0]},{zoom[1]}&l=map"
