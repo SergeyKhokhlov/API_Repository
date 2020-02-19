@@ -3,9 +3,9 @@ import sys
 import requests
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel
+from PyQt5.QtWidgets import QApplication, QPushButton, QWidget, QLabel
 
-SCREEN_SIZE = [600, 450]
+SCREEN_SIZE = [600, 550]
 
 
 class Example(QWidget):
@@ -34,12 +34,44 @@ class Example(QWidget):
     def initUI(self):
         self.setGeometry(100, 100, *SCREEN_SIZE)
         self.setWindowTitle('Отображение карты')
-
+        self.setStyleSheet("QWidget {background-color: lightgreen;}")
         self.pixmap = QPixmap(self.map_file)
         self.image = QLabel(self)
         self.image.move(0, 0)
         self.image.resize(600, 450)
         self.image.setPixmap(self.pixmap)
+        self.btn_map = QPushButton("Схема", self)
+        self.btn_map.resize(100, 50)
+        self.btn_map.setStyleSheet("QPushButton {border-radius: 10px; "
+                                   "border: 4px solid darkgreen; font-size: 20px; color: yellow; "
+                                   "background-color: green} QPushButton:hover "
+                                   "{background-color: black; border: 4px solid black;}"
+                                   ";}")
+        self.btn_map.move(80, 480)
+
+        self.btn_sat = QPushButton("Спутник", self)
+        self.btn_sat.resize(100, 50)
+        self.btn_sat.setStyleSheet("QPushButton {border-radius: 10px; "
+                                   "border: 4px solid darkgreen; font-size: 20px; color: yellow; "
+                                   "background-color: green} QPushButton:hover "
+                                   "{background-color: black; border: 4px solid black;}"
+                                   ";}")
+        self.btn_sat.move(250, 480)
+
+        self.btn_gib = QPushButton("Гибрид", self)
+        self.btn_gib.resize(100, 50)
+        self.btn_gib.setStyleSheet("QPushButton {border-radius: 10px; "
+                                   "border: 4px solid darkgreen; font-size: 20px; color: yellow; "
+                                   "background-color: green} QPushButton:hover "
+                                   "{background-color: black; border: 4px solid black;}"
+                                   ";}")
+        self.btn_gib.move(420, 480)
+        self.btn_map.clicked.connect(self.change_map)
+        self.btn_sat.clicked.connect(self.change_map)
+        self.btn_gib.clicked.connect(self.change_map)
+
+    def change_map(self):
+        pass
 
     def keyPressEvent(self, QKeyEvent):
         if QKeyEvent.key() == Qt.Key_PageUp:
