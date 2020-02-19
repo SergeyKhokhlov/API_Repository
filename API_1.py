@@ -16,22 +16,16 @@ class Example(QWidget):
         self.initUI()
 
     def getImage(self):
+        self.text = "Москва"
+        self.temp = "map"
+        self.zoom = ["0.001", "0.001"]
         self.params_search = {
             "apikey": '40d1649f-0493-4b70-98ba-98533de7710b',
             "geocode": self.text,
             "format": "json"
         }
-        map_request = f"http://static-maps.yandex.ru/1.x/"
-        response = requests.get(map_request, self.params).json()
-        self.toponym = response["response"]["GeoObject " \
-                                            "Collection"]["featur eMember"][0]["GeoObj " \
-                                                                               "ect"]["Point"][
-            'pos']
-        self.params_image = {
-            "ll": self.toponym,
-            "spn": [0.001, 0.001],
-            "l": self.temp,
-        }
+        map_request = "http://geocode-maps.yandex.ru/1.x/"
+        response = requests.get(map_request, self.params_search)
 
         if not response:
             print("Ошибка выполнения запроса:")
@@ -39,6 +33,18 @@ class Example(QWidget):
             print("Http статус:", response.status_code, "(", response.reason, ")")
             sys.exit(1)
 
+        json_response = response.json()
+        toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
+        toponym_coodrinates = toponym["Point"]["pos"]
+        self.coords = toponym_coodrinates.split()
+        print(toponym_coodrinates)
+        self.params_image = {
+            "ll": ','.join(self.coords),
+            "spn": ','.join(self.zoom),
+            "l": self.temp,
+        }
+        url = "http://static-maps.yandex.ru/1.x/"
+        response = requests.get(url, params=self.params_image)
         self.map_file = "map.png"
         if self.temp == "sat":
             self.map_file = "map.jpg"
@@ -81,10 +87,10 @@ class Example(QWidget):
                                    "{background-color: black; border: 4px solid black;}"
                                    ";}")
         self.btn_gib.move(420, 520)
-        self.btn_search = QPushButton("Поиск", self)
+        self.btn_search = QPushButton("Искать", self)
         self.btn_search.resize(100, 40)
         self.btn_search.setStyleSheet("QPushButton {border-radius: 10px; "
-                                      "border: 4px solid darkgreen; font-size: 20px; color: yellow; "
+                                      "border: 4px solid darkgreen; font-size: 20px; color: yellow;"
                                       "background-color: green} QPushButton:hover "
                                       "{background-color: black; border: 4px solid black;}"
                                       ";}")
@@ -92,8 +98,8 @@ class Example(QWidget):
         self.line_search = QLineEdit(self)
         self.line_search.resize(300, 40)
         self.line_search.move(80, 465)
-        self.line_search.setStyleSheet("QLineEdit {background-color: green; color: yellow; "
-                                       "border-radius: 10px; border: 4px solid darkgreen; "
+        self.line_search.setStyleSheet("QLineEdit {background-color: green; color: yellow;"
+                                       "border-radius: 10px; border: 4px solid darkgreen;"
                                        "font-size: 20px;}")
         self.btn_search.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_map.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
@@ -110,8 +116,13 @@ class Example(QWidget):
             self.temp = "sat"
         elif self.sender().text() == "Гибрид":
             self.temp = "skl"
+        self.params_image = {
+            "ll": ','.join(self.coords),
+            "spn": ','.join(self.zoom),
+            "l": self.temp,
+        }
         self.map_request = f"http://static-maps.yandex.ru/1.x/"
-        response = requests.get(self.map_request, self.params_image)
+        response = requests.get(self.map_request, params=self.params_image)
         if response:
             self.map_file = "map.png"
             if self.temp == "sat":
@@ -123,21 +134,28 @@ class Example(QWidget):
         self.image.setPixmap(self.pixmap)
 
     def keyPressEvent(self, event):
+        print(type(self.coords[0]))
         if event.key() == Qt.Key_PageUp:
-            if self.zoom >= 0.1:
-                self.zoom -= 0.1
+            if float(self.zoom[1]) >= 0.1:
+                self.zoom[1] = str(float(self.zoom[1]) - 0.1)
         elif event.key() == Qt.Key_PageDown:
-            if self.zoom <= 1:
-                self.zoom += 0.1
+            if float(self.zoom[1]) <= 1:
+                self.zoom[1] = str(float(self.zoom[1]) + 0.1)
         elif event.key() == Qt.Key_Right:
-            self.coords[1] += 0.001
+            self.coords[0] = str(float(self.coords[0]) + 0.001)
         elif event.key() == Qt.Key_Left:
-            self.coords[1] -= 0.001
+            self.coords[0] = str(float(self.coords[0]) - 0.001)
         elif event.key() == Qt.Key_Up:
-            self.coords[0] += 0.001
+            self.coords[1] = str(float(self.coords[1]) + 0.001)
         elif event.key() == Qt.Key_Down:
-            self.coords[0] -= 0.001
-        self.map_request = f"http://static-maps.yandex.ru/1.x/"
+            self.coords[1] = str(float(self.coords[1]) - 0.001)
+        print(self.coords)
+        self.params_image = {
+            "ll": ','.join(self.coords),
+            "spn": ','.join(self.zoom),
+            "l": self.temp,
+        }
+        self.map_request = "http://static-maps.yandex.ru/1.x/"
         response = requests.get(self.map_request, self.params_image)
         if response:
             self.map_file = "map.png"
