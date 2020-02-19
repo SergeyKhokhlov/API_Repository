@@ -16,9 +16,10 @@ class Example(QWidget):
 
     def getImage(self):
         self.zoom = 0.001
+        self.temp = "map"
         self.coords = [59.935789, 30.325904]
         map_request = f"http://static-maps.yandex.ru/1.x/?ll={self.coords[1]}," \
-            f"{self.coords[0]}8&spn={self.zoom},{self.zoom}&l=map"
+            f"{self.coords[0]}8&spn={self.zoom},{self.zoom}&l={self.temp}"
         response = requests.get(map_request)
 
         if not response:
@@ -28,6 +29,8 @@ class Example(QWidget):
             sys.exit(1)
 
         self.map_file = "map.png"
+        if self.temp == "sat":
+            self.map_file = "map.jpg"
         with open(self.map_file, "wb") as file:
             file.write(response.content)
 
@@ -37,6 +40,7 @@ class Example(QWidget):
         self.setStyleSheet("QWidget {background-color: lightgreen;}")
         self.pixmap = QPixmap(self.map_file)
         self.image = QLabel(self)
+        self.image.setFocus()
         self.image.move(0, 0)
         self.image.resize(600, 450)
         self.image.setPixmap(self.pixmap)
@@ -71,28 +75,47 @@ class Example(QWidget):
         self.btn_gib.clicked.connect(self.change_map)
 
     def change_map(self):
-        pass
-
-    def keyPressEvent(self, QKeyEvent):
-        if QKeyEvent.key() == Qt.Key_PageUp:
-            if self.zoom >= 0.1:
-                self.zoom -= 0.1
-        elif QKeyEvent.key() == Qt.Key_PageDown:
-            if self.zoom <= 1:
-                self.zoom += 0.1
-        elif QKeyEvent.key() == Qt.Key_Right:
-            self.coords[1] += 0.001
-        elif QKeyEvent.key() == Qt.Key_Left:
-            self.coords[1] -= 0.001
-        elif QKeyEvent.key() == Qt.Key_Up:
-            self.coords[0] += 0.001
-        elif QKeyEvent.key() == Qt.Key_Down:
-            self.coords[0] -= 0.001
+        if self.sender().text() == "Схема":
+            self.temp = "map"
+        elif self.sender().text() == "Спутник":
+            self.temp = "sat"
+        elif self.sender().text() == "Гибрид":
+            self.temp = "skl"
         self.map_request = f"http://static-maps.yandex.ru/1.x/?ll={self.coords[1]}," \
-            f"{self.coords[0]}8&spn={self.zoom},{self.zoom}&l=map"
+            f"{self.coords[0]}8&spn={self.zoom},{self.zoom}&l={self.temp}"
         response = requests.get(self.map_request)
         if response:
             self.map_file = "map.png"
+            if self.temp == "sat":
+                self.map_file = "map.jpg"
+            with open(self.map_file, "wb") as file:
+                file.write(response.content)
+        self.pixmap = QPixmap(self.map_file)
+        self.image.setFocus()
+        self.image.setPixmap(self.pixmap)
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_PageUp:
+            if self.zoom >= 0.1:
+                self.zoom -= 0.1
+        elif event.key() == Qt.Key_PageDown:
+            if self.zoom <= 1:
+                self.zoom += 0.1
+        elif event.key() == Qt.Key_Right:
+            self.coords[1] += 0.001
+        elif event.key() == Qt.Key_Left:
+            self.coords[1] -= 0.001
+        elif event.key() == Qt.Key_Up:
+            self.coords[0] += 0.001
+        elif event.key() == Qt.Key_Down:
+            self.coords[0] -= 0.001
+        self.map_request = f"http://static-maps.yandex.ru/1.x/?ll={self.coords[1]}," \
+            f"{self.coords[0]}8&spn={self.zoom},{self.zoom}&l={self.temp}"
+        response = requests.get(self.map_request)
+        if response:
+            self.map_file = "map.png"
+            if self.temp == "sat":
+                self.map_file = "map.jpg"
             with open(self.map_file, "wb") as file:
                 file.write(response.content)
         self.pixmap = QPixmap(self.map_file)
