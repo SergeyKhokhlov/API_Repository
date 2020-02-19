@@ -1,7 +1,7 @@
 import os
 import sys
-
 import requests
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel
 
@@ -40,6 +40,12 @@ class Example(QWidget):
         self.image.move(0, 0)
         self.image.resize(600, 450)
         self.image.setPixmap(self.pixmap)
+
+    def keyPressEvent(self, QKeyEvent):
+        if QKeyEvent.key() == Qt.Key_PageUp:
+            # zoom
+        elif QKeyEvent.key() == Qt.Key_PageDown:
+            # zoom
 
     def closeEvent(self, event):
         os.remove(self.map_file)
