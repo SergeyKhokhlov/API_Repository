@@ -2,10 +2,10 @@ import os
 import sys
 import requests
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QApplication, QPushButton, QWidget, QLabel
+from PyQt5.QtGui import QPixmap, QFont
+from PyQt5.QtWidgets import QApplication, QPushButton, QWidget, QLabel, QLineEdit
 
-SCREEN_SIZE = [600, 550]
+SCREEN_SIZE = [600, 600]
 
 
 class Example(QWidget):
@@ -51,7 +51,7 @@ class Example(QWidget):
                                    "background-color: green} QPushButton:hover "
                                    "{background-color: black; border: 4px solid black;}"
                                    ";}")
-        self.btn_map.move(80, 480)
+        self.btn_map.move(80, 520)
 
         self.btn_sat = QPushButton("Спутник", self)
         self.btn_sat.resize(100, 50)
@@ -60,7 +60,7 @@ class Example(QWidget):
                                    "background-color: green} QPushButton:hover "
                                    "{background-color: black; border: 4px solid black;}"
                                    ";}")
-        self.btn_sat.move(250, 480)
+        self.btn_sat.move(250, 520)
 
         self.btn_gib = QPushButton("Гибрид", self)
         self.btn_gib.resize(100, 50)
@@ -69,10 +69,27 @@ class Example(QWidget):
                                    "background-color: green} QPushButton:hover "
                                    "{background-color: black; border: 4px solid black;}"
                                    ";}")
-        self.btn_gib.move(420, 480)
+        self.btn_gib.move(420, 520)
+        self.btn_search = QPushButton("Поиск", self)
+        self.btn_search.resize(100, 40)
+        self.btn_search.setStyleSheet("QPushButton {border-radius: 10px; "
+                                   "border: 4px solid darkgreen; font-size: 20px; color: yellow; "
+                                   "background-color: green} QPushButton:hover "
+                                   "{background-color: black; border: 4px solid black;}"
+                                   ";}")
+        self.btn_search.move(420, 465)
+        self.font = QFont()
+        self.font.setPointSize(20)
+        self.line_search = QLineEdit(self)
+        self.line_search.resize(300, 30)
+        self.line_search.move(80, 470)
+        self.line_search.setFont(self.font)
         self.btn_map.clicked.connect(self.change_map)
         self.btn_sat.clicked.connect(self.change_map)
         self.btn_gib.clicked.connect(self.change_map)
+
+
+
 
     def change_map(self):
         if self.sender().text() == "Схема":
