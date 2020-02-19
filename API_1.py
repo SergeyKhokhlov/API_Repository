@@ -16,12 +16,22 @@ class Example(QWidget):
         self.initUI()
 
     def getImage(self):
-        self.zoom = 0.001
-        self.temp = "map"
-        self.coords = [59.935789, 30.325904]
-        map_request = f"http://static-maps.yandex.ru/1.x/?ll={self.coords[1]}," \
-                      f"{self.coords[0]}8&spn={self.zoom},{self.zoom}&l={self.temp}"
-        response = requests.get(map_request)
+        self.params_search = {
+            "apikey": '40d1649f-0493-4b70-98ba-98533de7710b',
+            "geocode": self.text,
+            "format": "json"
+        }
+        map_request = f"http://static-maps.yandex.ru/1.x/"
+        response = requests.get(map_request, self.params).json()
+        self.toponym = response["response"]["GeoObject " \
+                                            "Collection"]["featur eMember"][0]["GeoObj " \
+                                                                               "ect"]["Point"][
+            'pos']
+        self.params_image = {
+            "ll": self.toponym,
+            "spn": [0.001, 0.001],
+            "l": self.temp,
+        }
 
         if not response:
             print("Ошибка выполнения запроса:")
@@ -100,9 +110,8 @@ class Example(QWidget):
             self.temp = "sat"
         elif self.sender().text() == "Гибрид":
             self.temp = "skl"
-        self.map_request = f"http://static-maps.yandex.ru/1.x/?ll={self.coords[1]}," \
-                           f"{self.coords[0]}8&spn={self.zoom},{self.zoom}&l={self.temp}"
-        response = requests.get(self.map_request)
+        self.map_request = f"http://static-maps.yandex.ru/1.x/"
+        response = requests.get(self.map_request, self.params_image)
         if response:
             self.map_file = "map.png"
             if self.temp == "sat":
@@ -128,9 +137,8 @@ class Example(QWidget):
             self.coords[0] += 0.001
         elif event.key() == Qt.Key_Down:
             self.coords[0] -= 0.001
-        self.map_request = f"http://static-maps.yandex.ru/1.x/?ll={self.coords[1]}," \
-                           f"{self.coords[0]}8&spn={self.zoom},{self.zoom}&l={self.temp}"
-        response = requests.get(self.map_request)
+        self.map_request = f"http://static-maps.yandex.ru/1.x/"
+        response = requests.get(self.map_request, self.params_image)
         if response:
             self.map_file = "map.png"
             if self.temp == "sat":
