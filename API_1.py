@@ -15,10 +15,10 @@ class Example(QWidget):
         self.initUI()
 
     def getImage(self):
-        zoom = [0.002, 0.002]
-        coords = [59.935789, 30.325904]
-        map_request = f"http://static-maps.yandex.ru/1.x/?ll={coords[1]}," \
-            f"{coords[0]}8&spn={zoom[0]},{zoom[1]}&l=map"
+        self.zoom = 0.001
+        self.coords = [59.935789, 30.325904]
+        map_request = f"http://static-maps.yandex.ru/1.x/?ll={self.coords[1]}," \
+            f"{self.coords[0]}8&spn={self.zoom},{self.zoom}&l=map"
         response = requests.get(map_request)
 
         if not response:
@@ -43,9 +43,21 @@ class Example(QWidget):
 
     def keyPressEvent(self, QKeyEvent):
         if QKeyEvent.key() == Qt.Key_PageUp:
-            # zoom
+            if self.zoom != 0.001:
+                self.zoom -= 0.001
         elif QKeyEvent.key() == Qt.Key_PageDown:
-            # zoom
+            if self.zoom != 1:
+                self.zoom += 0.001
+        print(self.zoom)
+        self.map_request = f"http://static-maps.yandex.ru/1.x/?ll={self.coords[1]}," \
+            f"{self.coords[0]}8&spn={self.zoom},{self.zoom}&l=map"
+        response = requests.get(self.map_request)
+        if response:
+            self.map_file = "map.png"
+            with open(self.map_file, "wb") as file:
+                file.write(response.content)
+        self.pixmap = QPixmap(self.map_file)
+        self.image.setPixmap(self.pixmap)
 
     def closeEvent(self, event):
         os.remove(self.map_file)
