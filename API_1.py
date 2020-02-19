@@ -48,6 +48,14 @@ class Example(QWidget):
         elif QKeyEvent.key() == Qt.Key_PageDown:
             if self.zoom <= 1:
                 self.zoom += 0.1
+        elif QKeyEvent.key() == Qt.Key_Right:
+            pass
+        elif QKeyEvent.key() == Qt.Key_Left:
+            pass
+        elif QKeyEvent.key() == Qt.Key_Up:
+            pass
+        elif QKeyEvent.key() == Qt.Key_Down:
+            pass
         self.map_request = f"http://static-maps.yandex.ru/1.x/?ll={self.coords[1]}," \
             f"{self.coords[0]}8&spn={self.zoom},{self.zoom}&l=map"
         response = requests.get(self.map_request)
