@@ -113,7 +113,7 @@ class Example(QWidget):
                                              "border-radius: 10px; border: 4px solid darkgreen;"
                                              "font-size: 20px;} QPushButton:hover "
                                              "{background-color: black; border: 4px solid black;}"
-                                              ";}")
+                                             ";}")
         self.output_search = QTextEdit(self)
         self.output_search.move(130, 600)
         self.output_search.resize(410, 40)
@@ -148,7 +148,7 @@ class Example(QWidget):
                 "ll": ','.join(self.coords),
                 "spn": ','.join(self.zoom),
                 "l": self.temp,
-                "pt": ','.join(self.coords) + ",pm2gnl"
+                "pt": ','.join(self.coords_pt) + ",pm2gnl"
             }
         self.map_request = f"http://static-maps.yandex.ru/1.x/"
         response = requests.get(self.map_request, params=self.params_image)
@@ -209,7 +209,7 @@ class Example(QWidget):
                         "ll": ','.join(self.coords),
                         "spn": ','.join(self.zoom),
                         "l": self.temp,
-                        "pt": ','.join(self.coords) + ",pm2gnl"
+                        "pt": ','.join(self.coords_pt) + ",pm2gnl"
                     }
                 url = "http://static-maps.yandex.ru/1.x/"
                 response = requests.get(url, params=self.params_image)
@@ -228,7 +228,7 @@ class Example(QWidget):
                         "ll": ','.join(self.coords),
                         "spn": ','.join(self.zoom),
                         "l": self.temp,
-                        "pt": ','.join(self.coords) + ",pm2gnl"
+                        "pt": ','.join(self.coords_pt) + ",pm2gnl"
                     }
                 self.map_request = "http://static-maps.yandex.ru/1.x/"
                 response = requests.get(self.map_request, self.params_image)
@@ -269,7 +269,7 @@ class Example(QWidget):
                 "ll": ','.join(self.coords),
                 "spn": ','.join(self.zoom),
                 "l": self.temp,
-                "pt": ','.join(self.coords) + ",pm2gnl"
+                "pt": ','.join(self.coords_pt) + ",pm2gnl"
             }
         self.map_request = "http://static-maps.yandex.ru/1.x/"
         response = requests.get(self.map_request, self.params_image)
