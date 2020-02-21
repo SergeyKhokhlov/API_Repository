@@ -107,15 +107,13 @@ class Example(QWidget):
                                        "border-radius: 10px; border: 4px solid darkgreen;"
                                        "font-size: 20px;}")
         self.btn_delete_search = QPushButton("Сброс поискового результата", self)
-        self.btn_delete_search.move(130, 535)
+        self.btn_delete_search.move(130, 600)
         self.btn_delete_search.resize(410, 40)
         self.btn_delete_search.setStyleSheet("QPushButton {background-color: green; color: yellow;"
                                              "border-radius: 10px; border: 4px solid darkgreen;"
-                                             "font-size: 20px;} QPushButton:hover "
-                                             "{background-color: black; border: 4px solid black;}"
-                                              ";}")
+                                             "font-size: 20px;}")
         self.output_search = QTextEdit(self)
-        self.output_search.move(130, 600)
+        self.output_search.move(130, 535)
         self.output_search.resize(410, 40)
         self.output_search.setStyleSheet("QTextEdit {background-color: green; color: yellow;"
                                          "border-radius: 10px; border: 4px solid darkgreen;"
