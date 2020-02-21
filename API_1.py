@@ -6,7 +6,7 @@ from PyQt5 import QtGui, QtCore
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QApplication, QPushButton, QWidget, QLabel, QLineEdit
 
-SCREEN_SIZE = [600, 600]
+SCREEN_SIZE = [600, 670]
 
 
 class Example(QWidget):
@@ -65,7 +65,7 @@ class Example(QWidget):
                                    "background-color: green} QPushButton:hover "
                                    "{background-color: black; border: 4px solid black;}"
                                    ";}")
-        self.btn_map.move(80, 520)
+        self.btn_map.move(80, 580)
 
         self.btn_sat = QPushButton("Спутник", self)
         self.btn_sat.resize(100, 50)
@@ -74,7 +74,7 @@ class Example(QWidget):
                                    "background-color: green} QPushButton:hover "
                                    "{background-color: black; border: 4px solid black;}"
                                    ";}")
-        self.btn_sat.move(250, 520)
+        self.btn_sat.move(250, 580)
 
         self.btn_gib = QPushButton("Гибрид", self)
         self.btn_gib.resize(100, 50)
@@ -83,7 +83,7 @@ class Example(QWidget):
                                    "background-color: green} QPushButton:hover "
                                    "{background-color: black; border: 4px solid black;}"
                                    ";}")
-        self.btn_gib.move(420, 520)
+        self.btn_gib.move(420, 580)
         self.btn_search = QPushButton("Искать", self)
         self.btn_search.resize(100, 40)
         self.btn_search.setStyleSheet("QPushButton {border-radius: 10px; "
@@ -98,6 +98,12 @@ class Example(QWidget):
         self.line_search.setStyleSheet("QLineEdit {background-color: green; color: yellow;"
                                        "border-radius: 10px; border: 4px solid darkgreen;"
                                        "font-size: 20px;}")
+        self.btn_delete_search = QPushButton("Сброс поискового результата", self)
+        self.btn_delete_search.move(80, 520)
+        self.btn_delete_search.resize(440, 40)
+        self.btn_delete_search.setStyleSheet("QPushButton {background-color: green; color: yellow;"
+                                       "border-radius: 10px; border: 4px solid darkgreen;"
+                                       "font-size: 20px;}")
         self.btn_search.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_map.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_gib.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
@@ -106,6 +112,7 @@ class Example(QWidget):
         self.btn_sat.clicked.connect(self.change_map)
         self.btn_gib.clicked.connect(self.change_map)
         self.btn_search.clicked.connect(self.search_place)
+       # self.btn_delete_search.clicked.connect()
 
     def change_map(self):
         if self.sender().text() == "Схема":
@@ -153,7 +160,7 @@ class Example(QWidget):
                     "ll": ','.join(self.coords),
                     "spn": ','.join(self.zoom),
                     "l": self.temp,
-                    "pt": ','.join(self.coords) + ",pm2gnl"
+                    "pt": ','.join(self.coords_pt) + ",pm2gnl"
                 }
                 url = "http://static-maps.yandex.ru/1.x/"
                 response = requests.get(url, params=self.params_image)
