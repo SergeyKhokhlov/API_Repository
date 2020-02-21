@@ -33,6 +33,7 @@ class Example(QWidget):
                 "GeoObject"]
             toponym_coodrinates = toponym["Point"]["pos"]
             self.coords = toponym_coodrinates.split()
+            self.coords_pt = toponym_coodrinates.split()
             self.params_image = {
                 "ll": ','.join(self.coords),
                 "spn": ','.join(self.zoom),
@@ -117,7 +118,7 @@ class Example(QWidget):
             "ll": ','.join(self.coords),
             "spn": ','.join(self.zoom),
             "l": self.temp,
-            "pt": ','.join(self.coords)
+            "pt": ','.join(self.coords_pt)
         }
         self.map_request = f"http://static-maps.yandex.ru/1.x/"
         response = requests.get(self.map_request, params=self.params_image)
@@ -152,7 +153,7 @@ class Example(QWidget):
                     "ll": ','.join(self.coords),
                     "spn": ','.join(self.zoom),
                     "l": self.temp,
-                    "pt": ','.join(self.coords)
+                    "pt": ','.join(self.coords_pt)
                 }
                 url = "http://static-maps.yandex.ru/1.x/"
                 response = requests.get(url, params=self.params_image)
@@ -165,7 +166,7 @@ class Example(QWidget):
                     "ll": ','.join(self.coords),
                     "spn": ','.join(self.zoom),
                     "l": self.temp,
-                    "pt": ','.join(self.coords)
+                    "pt": ','.join(self.coords_pt)
                 }
                 self.map_request = "http://static-maps.yandex.ru/1.x/"
                 response = requests.get(self.map_request, self.params_image)
@@ -186,7 +187,7 @@ class Example(QWidget):
             if float(self.zoom[1]) >= 0.1:
                 self.zoom[1] = str(float(self.zoom[1]) - 0.1)
         elif event.key() == Qt.Key_PageDown:
-            if float(self.zoom[1]) <= 1:
+            if float(self.zoom[1]) <= 20:
                 self.zoom[1] = str(float(self.zoom[1]) + 0.1)
         elif event.key() == Qt.Key_Right:
             self.coords[0] = str(float(self.coords[0]) + 0.001)
@@ -200,7 +201,7 @@ class Example(QWidget):
             "ll": ','.join(self.coords),
             "spn": ','.join(self.zoom),
             "l": self.temp,
-            "pt": ','.join(self.coords)
+            "pt": ','.join(self.coords_pt)
         }
         self.map_request = "http://static-maps.yandex.ru/1.x/"
         response = requests.get(self.map_request, self.params_image)
