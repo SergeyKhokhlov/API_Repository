@@ -4,9 +4,10 @@ import requests
 from PyQt5.QtCore import Qt
 from PyQt5 import QtGui, QtCore
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QApplication, QPushButton, QWidget, QLabel, QLineEdit, QTextEdit
+from PyQt5.QtWidgets import QApplication, QPushButton, QWidget, QLabel, QLineEdit, QTextEdit, \
+    QCheckBox, QLabel
 
-SCREEN_SIZE = [600, 670]
+SCREEN_SIZE = [1050, 670]
 
 
 class Example(QWidget):
@@ -45,7 +46,7 @@ class Example(QWidget):
                     "ll": ','.join(self.coords),
                     "spn": ','.join(self.zoom),
                     "l": self.temp,
-                    "pt": ','.join(self.coords) + ",pm2gnl"
+                    "pt": ','.join(self.coords_pt) + ",pm2gnl"
                 }
             url = "http://static-maps.yandex.ru/1.x/"
             response = requests.get(url, params=self.params_image)
@@ -66,7 +67,7 @@ class Example(QWidget):
         self.image.resize(600, 450)
         self.image.setPixmap(self.pixmap)
         self.btn_map = QPushButton("Схема", self)
-        self.btn_map.resize(100, 50)
+        self.btn_map.resize(560, 50)
         self.btn_map.setStyleSheet("QPushButton {border-radius: 10px; "
                                    "border: 4px solid darkgreen; font-size: 20px; color: yellow; "
                                    "background-color: green} QPushButton:hover "
@@ -75,7 +76,7 @@ class Example(QWidget):
         self.btn_map.move(20, 470)
 
         self.btn_sat = QPushButton("Спутник", self)
-        self.btn_sat.resize(100, 50)
+        self.btn_sat.resize(560, 50)
         self.btn_sat.setStyleSheet("QPushButton {border-radius: 10px; "
                                    "border: 4px solid darkgreen; font-size: 20px; color: yellow; "
                                    "background-color: green} QPushButton:hover "
@@ -84,7 +85,7 @@ class Example(QWidget):
         self.btn_sat.move(20, 530)
 
         self.btn_gib = QPushButton("Гибрид", self)
-        self.btn_gib.resize(100, 50)
+        self.btn_gib.resize(560, 50)
         self.btn_gib.setStyleSheet("QPushButton {border-radius: 10px; "
                                    "border: 4px solid darkgreen; font-size: 20px; color: yellow; "
                                    "background-color: green} QPushButton:hover "
@@ -98,15 +99,15 @@ class Example(QWidget):
                                       "background-color: green} QPushButton:hover "
                                       "{background-color: black; border: 4px solid black;}"
                                       ";}")
-        self.btn_search.move(440, 475)
+        self.btn_search.move(930, 20)
         self.line_search = QLineEdit(self)
         self.line_search.resize(300, 40)
-        self.line_search.move(130, 475)
+        self.line_search.move(620, 20)
         self.line_search.setStyleSheet("QLineEdit {background-color: green; color: yellow;"
                                        "border-radius: 10px; border: 4px solid darkgreen;"
                                        "font-size: 20px;}")
         self.btn_delete_search = QPushButton("Сброс поискового результата", self)
-        self.btn_delete_search.move(130, 535)
+        self.btn_delete_search.move(620, 80)
         self.btn_delete_search.resize(410, 40)
         self.btn_delete_search.setStyleSheet("QPushButton {background-color: green; color: yellow;"
                                              "border-radius: 10px; border: 4px solid darkgreen;"
@@ -114,13 +115,28 @@ class Example(QWidget):
                                              "{background-color: black; border: 4px solid black;}"
                                              ";}")
         self.output_search = QTextEdit(self)
-        self.output_search.move(130, 600)
+        self.output_search.move(620, 140)
         self.output_search.resize(410, 40)
         self.output_search.setStyleSheet("QTextEdit {background-color: green; color: yellow;"
                                          "border-radius: 10px; border: 4px solid darkgreen;"
                                          "font-size: 20px;}")
+        self.checkBox = QCheckBox(self)
+        self.checkBox.move(990, 200)
+        self.checkBox.resize(40, 40)
+        self.checkBox.setStyleSheet("QCheckBox {background-color: green; color: yellow;"
+                                    "border-radius: 10px; border: 4px solid darkgreen;"
+                                    "font-size: 20px; padding-left: 9px;} QPushButton:hover "
+                                    "{background-color: black; border: 4px solid black;}"
+                                    ";}")
         self.output_search.setReadOnly(True)
+        self.text_checkBox = QLabel("Отобразить почтовый индекс", self)
+        self.text_checkBox.move(620, 200)
+        self.text_checkBox.resize(360, 40)
+        self.text_checkBox.setStyleSheet(
+            "QLabel {color: yellow; font-size: 20px; "
+            "background-color: #339900; padding-left: 35px;}")
         self.image.setFocus()
+        self.output_search.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.btn_search.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_map.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_gib.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
@@ -198,8 +214,16 @@ class Example(QWidget):
                 json_response = response.json()
                 toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0][
                     "GeoObject"]
+                toponym_index = ""
+                try:
+                    toponym_index = toponym["metaDataProperty"]["GeocoderMetaData"]["Address"][
+                        "postal_code"]
+                except:
+                    pass
                 toponym_address = toponym["metaDataProperty"]["GeocoderMetaData"]['text']
                 self.output_search.setPlainText(toponym_address)
+                if self.checkBox.isChecked() and toponym_index != "":
+                    self.output_search.setPlainText(toponym_address + " Индекс: " + toponym_index)
                 toponym_coodrinates = toponym["Point"]["pos"]
                 self.coords = toponym_coodrinates.split()
                 self.coords_pt = toponym_coodrinates.split()
