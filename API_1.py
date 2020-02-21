@@ -149,6 +149,7 @@ class Example(QWidget):
                     "GeoObject"]
                 toponym_coodrinates = toponym["Point"]["pos"]
                 self.coords = toponym_coodrinates.split()
+                self.coords_pt = toponym_coodrinates.split()
                 self.params_image = {
                     "ll": ','.join(self.coords),
                     "spn": ','.join(self.zoom),
