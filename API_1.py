@@ -38,7 +38,7 @@ class Example(QWidget):
                 "ll": ','.join(self.coords),
                 "spn": ','.join(self.zoom),
                 "l": self.temp,
-                "pt": ','.join(self.coords)
+                "pt": ','.join(self.coords) + ",pm2gnl"
             }
             url = "http://static-maps.yandex.ru/1.x/"
             response = requests.get(url, params=self.params_image)
@@ -118,7 +118,7 @@ class Example(QWidget):
             "ll": ','.join(self.coords),
             "spn": ','.join(self.zoom),
             "l": self.temp,
-            "pt": ','.join(self.coords_pt)
+            "pt": ','.join(self.coords) + ",pm2gnl"
         }
         self.map_request = f"http://static-maps.yandex.ru/1.x/"
         response = requests.get(self.map_request, params=self.params_image)
@@ -142,7 +142,6 @@ class Example(QWidget):
             }
             map_request = "http://geocode-maps.yandex.ru/1.x/"
             response = requests.get(map_request, self.params_search)
-
             if response:
                 json_response = response.json()
                 toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0][
@@ -154,7 +153,7 @@ class Example(QWidget):
                     "ll": ','.join(self.coords),
                     "spn": ','.join(self.zoom),
                     "l": self.temp,
-                    "pt": ','.join(self.coords_pt)
+                    "pt": ','.join(self.coords) + ",pm2gnl"
                 }
                 url = "http://static-maps.yandex.ru/1.x/"
                 response = requests.get(url, params=self.params_image)
@@ -167,7 +166,7 @@ class Example(QWidget):
                     "ll": ','.join(self.coords),
                     "spn": ','.join(self.zoom),
                     "l": self.temp,
-                    "pt": ','.join(self.coords_pt)
+                    "pt": ','.join(self.coords_pt) + ",pm2gnl"
                 }
                 self.map_request = "http://static-maps.yandex.ru/1.x/"
                 response = requests.get(self.map_request, self.params_image)
@@ -179,11 +178,11 @@ class Example(QWidget):
                         file.write(response.content)
                 self.pixmap = QPixmap(self.map_file)
                 self.image.setPixmap(self.pixmap)
+                self.image.setFocus()
         except Exception:
             pass
 
     def keyPressEvent(self, event):
-        print(type(self.coords[0]))
         if event.key() == Qt.Key_PageUp:
             if float(self.zoom[1]) >= 0.1:
                 self.zoom[1] = str(float(self.zoom[1]) - 0.1)
@@ -202,7 +201,7 @@ class Example(QWidget):
             "ll": ','.join(self.coords),
             "spn": ','.join(self.zoom),
             "l": self.temp,
-            "pt": ','.join(self.coords_pt)
+            "pt": ','.join(self.coords_pt) + ",pm2gnl"
         }
         self.map_request = "http://static-maps.yandex.ru/1.x/"
         response = requests.get(self.map_request, self.params_image)
