@@ -12,6 +12,8 @@ SCREEN_SIZE = [600, 670]
 class Example(QWidget):
     def __init__(self):
         super().__init__()
+        self.deleteSearch = False
+        print(12)
         self.getImage()
         self.initUI()
 
@@ -38,8 +40,14 @@ class Example(QWidget):
                 "ll": ','.join(self.coords),
                 "spn": ','.join(self.zoom),
                 "l": self.temp,
-                "pt": ','.join(self.coords) + ",pm2gnl"
             }
+            if not self.deleteSearch:
+                self.params_image = {
+                    "ll": ','.join(self.coords),
+                    "spn": ','.join(self.zoom),
+                    "l": self.temp,
+                    "pt": ','.join(self.coords) + ",pm2gnl"
+                }
             url = "http://static-maps.yandex.ru/1.x/"
             response = requests.get(url, params=self.params_image)
             self.map_file = "map.png"
@@ -102,17 +110,20 @@ class Example(QWidget):
         self.btn_delete_search.move(80, 520)
         self.btn_delete_search.resize(440, 40)
         self.btn_delete_search.setStyleSheet("QPushButton {background-color: green; color: yellow;"
-                                       "border-radius: 10px; border: 4px solid darkgreen;"
-                                       "font-size: 20px;}")
+                                             "border-radius: 10px; border: 4px solid darkgreen;"
+                                             "font-size: 20px;} QPushButton:hover "
+                                             "{background-color: black; border: 4px solid black;}"
+                                             ";}")
         self.btn_search.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_map.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_gib.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_sat.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_delete_search.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_map.clicked.connect(self.change_map)
         self.btn_sat.clicked.connect(self.change_map)
         self.btn_gib.clicked.connect(self.change_map)
         self.btn_search.clicked.connect(self.search_place)
-       # self.btn_delete_search.clicked.connect()
+        self.btn_delete_search.clicked.connect(self.delete_search)
 
     def change_map(self):
         if self.sender().text() == "Схема":
@@ -125,8 +136,14 @@ class Example(QWidget):
             "ll": ','.join(self.coords),
             "spn": ','.join(self.zoom),
             "l": self.temp,
-            "pt": ','.join(self.coords) + ",pm2gnl"
         }
+        if not self.deleteSearch:
+            self.params_image = {
+                "ll": ','.join(self.coords),
+                "spn": ','.join(self.zoom),
+                "l": self.temp,
+                "pt": ','.join(self.coords) + ",pm2gnl"
+            }
         self.map_request = f"http://static-maps.yandex.ru/1.x/"
         response = requests.get(self.map_request, params=self.params_image)
         if response:
@@ -139,7 +156,27 @@ class Example(QWidget):
         self.image.setFocus()
         self.image.setPixmap(self.pixmap)
 
+    def delete_search(self):
+        self.deleteSearch = True
+        self.params_image = {
+            "ll": ','.join(self.coords),
+            "spn": ','.join(self.zoom),
+            "l": self.temp,
+        }
+        self.line_search.setText("")
+        self.map_request = "http://static-maps.yandex.ru/1.x/"
+        response = requests.get(self.map_request, self.params_image)
+        if response:
+            self.map_file = "map.png"
+            if self.temp == "sat":
+                self.map_file = "map.jpg"
+            with open(self.map_file, "wb") as file:
+                file.write(response.content)
+        self.pixmap = QPixmap(self.map_file)
+        self.image.setPixmap(self.pixmap)
+
     def search_place(self):
+        self.deleteSearch = False
         try:
             self.text = self.line_search.text()
             self.params_search = {
@@ -160,8 +197,14 @@ class Example(QWidget):
                     "ll": ','.join(self.coords),
                     "spn": ','.join(self.zoom),
                     "l": self.temp,
-                    "pt": ','.join(self.coords_pt) + ",pm2gnl"
                 }
+                if not self.deleteSearch:
+                    self.params_image = {
+                        "ll": ','.join(self.coords),
+                        "spn": ','.join(self.zoom),
+                        "l": self.temp,
+                        "pt": ','.join(self.coords) + ",pm2gnl"
+                    }
                 url = "http://static-maps.yandex.ru/1.x/"
                 response = requests.get(url, params=self.params_image)
                 self.map_file = "map.png"
@@ -173,8 +216,14 @@ class Example(QWidget):
                     "ll": ','.join(self.coords),
                     "spn": ','.join(self.zoom),
                     "l": self.temp,
-                    "pt": ','.join(self.coords_pt) + ",pm2gnl"
                 }
+                if not self.deleteSearch:
+                    self.params_image = {
+                        "ll": ','.join(self.coords),
+                        "spn": ','.join(self.zoom),
+                        "l": self.temp,
+                        "pt": ','.join(self.coords) + ",pm2gnl"
+                    }
                 self.map_request = "http://static-maps.yandex.ru/1.x/"
                 response = requests.get(self.map_request, self.params_image)
                 if response:
@@ -208,8 +257,14 @@ class Example(QWidget):
             "ll": ','.join(self.coords),
             "spn": ','.join(self.zoom),
             "l": self.temp,
-            "pt": ','.join(self.coords_pt) + ",pm2gnl"
         }
+        if not self.deleteSearch:
+            self.params_image = {
+                "ll": ','.join(self.coords),
+                "spn": ','.join(self.zoom),
+                "l": self.temp,
+                "pt": ','.join(self.coords) + ",pm2gnl"
+            }
         self.map_request = "http://static-maps.yandex.ru/1.x/"
         response = requests.get(self.map_request, self.params_image)
         if response:
