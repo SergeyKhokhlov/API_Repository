@@ -4,7 +4,7 @@ import requests
 from PyQt5.QtCore import Qt
 from PyQt5 import QtGui, QtCore
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QApplication, QPushButton, QWidget, QLabel, QLineEdit
+from PyQt5.QtWidgets import QApplication, QPushButton, QWidget, QLabel, QLineEdit, QTextEdit
 
 SCREEN_SIZE = [600, 670]
 
@@ -45,7 +45,7 @@ class Example(QWidget):
                     "ll": ','.join(self.coords),
                     "spn": ','.join(self.zoom),
                     "l": self.temp,
-                    "pt": ','.join(self.coords_pt) + ",pm2gnl"
+                    "pt": ','.join(self.coords) + ",pm2gnl"
                 }
             url = "http://static-maps.yandex.ru/1.x/"
             response = requests.get(url, params=self.params_image)
@@ -72,7 +72,7 @@ class Example(QWidget):
                                    "background-color: green} QPushButton:hover "
                                    "{background-color: black; border: 4px solid black;}"
                                    ";}")
-        self.btn_map.move(80, 580)
+        self.btn_map.move(20, 470)
 
         self.btn_sat = QPushButton("Спутник", self)
         self.btn_sat.resize(100, 50)
@@ -81,7 +81,7 @@ class Example(QWidget):
                                    "background-color: green} QPushButton:hover "
                                    "{background-color: black; border: 4px solid black;}"
                                    ";}")
-        self.btn_sat.move(250, 580)
+        self.btn_sat.move(20, 530)
 
         self.btn_gib = QPushButton("Гибрид", self)
         self.btn_gib.resize(100, 50)
@@ -90,7 +90,7 @@ class Example(QWidget):
                                    "background-color: green} QPushButton:hover "
                                    "{background-color: black; border: 4px solid black;}"
                                    ";}")
-        self.btn_gib.move(420, 580)
+        self.btn_gib.move(20, 590)
         self.btn_search = QPushButton("Искать", self)
         self.btn_search.resize(100, 40)
         self.btn_search.setStyleSheet("QPushButton {border-radius: 10px; "
@@ -98,21 +98,29 @@ class Example(QWidget):
                                       "background-color: green} QPushButton:hover "
                                       "{background-color: black; border: 4px solid black;}"
                                       ";}")
-        self.btn_search.move(420, 465)
+        self.btn_search.move(440, 475)
         self.line_search = QLineEdit(self)
         self.line_search.resize(300, 40)
-        self.line_search.move(80, 465)
+        self.line_search.move(130, 475)
         self.line_search.setStyleSheet("QLineEdit {background-color: green; color: yellow;"
                                        "border-radius: 10px; border: 4px solid darkgreen;"
                                        "font-size: 20px;}")
         self.btn_delete_search = QPushButton("Сброс поискового результата", self)
-        self.btn_delete_search.move(80, 520)
-        self.btn_delete_search.resize(440, 40)
+        self.btn_delete_search.move(130, 535)
+        self.btn_delete_search.resize(410, 40)
         self.btn_delete_search.setStyleSheet("QPushButton {background-color: green; color: yellow;"
                                              "border-radius: 10px; border: 4px solid darkgreen;"
                                              "font-size: 20px;} QPushButton:hover "
                                              "{background-color: black; border: 4px solid black;}"
                                              ";}")
+        self.output_search = QTextEdit(self)
+        self.output_search.move(130, 600)
+        self.output_search.resize(410, 40)
+        self.output_search.setStyleSheet("QTextEdit {background-color: green; color: yellow;"
+                                         "border-radius: 10px; border: 4px solid darkgreen;"
+                                         "font-size: 20px;}")
+        self.output_search.setReadOnly(True)
+        self.image.setFocus()
         self.btn_search.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_map.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.btn_gib.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
@@ -163,6 +171,7 @@ class Example(QWidget):
             "l": self.temp,
         }
         self.line_search.setText("")
+        self.output_search.setPlainText("")
         self.map_request = "http://static-maps.yandex.ru/1.x/"
         response = requests.get(self.map_request, self.params_image)
         if response:
@@ -189,6 +198,8 @@ class Example(QWidget):
                 json_response = response.json()
                 toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0][
                     "GeoObject"]
+                toponym_address = toponym["metaDataProperty"]["GeocoderMetaData"]['text']
+                self.output_search.setPlainText(toponym_address)
                 toponym_coodrinates = toponym["Point"]["pos"]
                 self.coords = toponym_coodrinates.split()
                 self.coords_pt = toponym_coodrinates.split()
