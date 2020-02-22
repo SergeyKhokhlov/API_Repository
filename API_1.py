@@ -116,12 +116,12 @@ class Example(QWidget):
                                              ";}")
         self.output_search = QTextEdit(self)
         self.output_search.move(620, 140)
-        self.output_search.resize(410, 40)
+        self.output_search.resize(410, 90)
         self.output_search.setStyleSheet("QTextEdit {background-color: green; color: yellow;"
                                          "border-radius: 10px; border: 4px solid darkgreen;"
                                          "font-size: 20px;}")
         self.checkBox = QCheckBox(self)
-        self.checkBox.move(990, 200)
+        self.checkBox.move(990, 260)
         self.checkBox.resize(40, 40)
         self.checkBox.setStyleSheet("QCheckBox {background-color: green; color: yellow;"
                                     "border-radius: 10px; border: 4px solid darkgreen;"
@@ -130,7 +130,7 @@ class Example(QWidget):
                                     ";}")
         self.output_search.setReadOnly(True)
         self.text_checkBox = QLabel("Отобразить почтовый индекс", self)
-        self.text_checkBox.move(620, 200)
+        self.text_checkBox.move(620, 260)
         self.text_checkBox.resize(360, 40)
         self.text_checkBox.setStyleSheet(
             "QLabel {color: yellow; font-size: 20px; "
@@ -274,19 +274,19 @@ class Example(QWidget):
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_PageUp:
-            if float(self.zoom[1]) >= 0.1:
-                self.zoom[1] = str(float(self.zoom[1]) - 0.1)
+            if float(self.zoom[1]) >= 0.01:
+                self.zoom[1] = str(float(self.zoom[1]) - 0.01)
         elif event.key() == Qt.Key_PageDown:
             if float(self.zoom[1]) <= 20:
-                self.zoom[1] = str(float(self.zoom[1]) + 0.1)
+                self.zoom[1] = str(float(self.zoom[1]) + 0.01)
         elif event.key() == Qt.Key_Right:
-            self.coords[0] = str(float(self.coords[0]) + 0.001)
+            self.coords[0] = str(float(self.coords[0]) + (0.1 * float(self.zoom[1])))
         elif event.key() == Qt.Key_Left:
-            self.coords[0] = str(float(self.coords[0]) - 0.001)
+            self.coords[0] = str(float(self.coords[0]) - (0.1 * float(self.zoom[1])))
         elif event.key() == Qt.Key_Up:
-            self.coords[1] = str(float(self.coords[1]) + 0.001)
+            self.coords[1] = str(float(self.coords[1]) + (0.1 * float(self.zoom[1])))
         elif event.key() == Qt.Key_Down:
-            self.coords[1] = str(float(self.coords[1]) - 0.001)
+            self.coords[1] = str(float(self.coords[1]) - (0.1 * float(self.zoom[1])))
         self.params_image = {
             "ll": ','.join(self.coords),
             "spn": ','.join(self.zoom),
