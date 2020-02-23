@@ -147,6 +147,7 @@ class Example(QWidget):
         self.btn_gib.clicked.connect(self.change_map)
         self.btn_search.clicked.connect(self.search_place)
         self.btn_delete_search.clicked.connect(self.delete_search)
+        self.checkBox.toggled.connect(self.search_place)
 
     def change_map(self):
         if self.sender().text() == "Схема":
